@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pengenalan Alat Laboratorium IPA — Kelas VII</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Literata:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #F2F6F0;
+    --paper: #FFFFFF;
+    --ink: #16241C;
+    --ink-soft: #445248;
+    --teal: #2F6F62;
+    --teal-deep: #1E4B41;
+    --amber: #E2963A;
+    --amber-deep: #C77A22;
+    --line: #CBD6C6;
+    --danger: #B4543A;
+    --violet: #6C5B9E;
+    --blue: #3A6EA5;
+    --rack-bg: #E7EEE3;
+    --radius: 4px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Literata', serif;
+    font-size:16px;
+    line-height:1.65;
+  }
+  h1,h2,h3,.label,.mono{
+    font-family:'IBM Plex Mono', monospace;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--teal-deep);
+    font-weight:600;
+  }
+
+  /* ===== RACK NAV ===== */
+  .rack-nav{
+    position:sticky; top:0; z-index:50;
+    background:var(--rack-bg);
+    border-bottom:2px solid var(--ink);
+    padding:10px 16px 6px;
+    display:flex; justify-content:center;
+  }
+  .rack{
+    display:flex; gap:6px; align-items:flex-end;
+    max-width:920px; width:100%;
+    justify-content:space-between;
+  }
+  .tube-btn{
+    background:none; border:none; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center;
+    gap:4px; padding:4px 2px; flex:1; min-width:0;
+  }
+  .tube-btn svg{ display:block; }
+  .tube-liquid{ transition:height .5s ease, y .5s ease; }
+  .tube-label{
+    font-size:9.5px; letter-spacing:.05em; text-transform:uppercase;
+    color:var(--ink-soft); font-weight:600; text-align:center;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%;
+  }
+  .tube-btn.active .tube-label{ color:var(--ink); }
+  .tube-btn:focus-visible{ outline:2px solid var(--teal); outline-offset:2px; }
+
+  @media (max-width:640px){
+    .tube-label{ font-size:8px; }
+  }
+
+  /* ===== LAYOUT ===== */
+  section{
+    max-width:920px; margin:0 auto;
+    padding:64px 24px;
+    border-bottom:1px solid var(--line);
+  }
+  section:last-of-type{ border-bottom:none; }
+  .section-head{ margin-bottom:36px; }
+  .section-head h2{
+    font-size:clamp(26px,4vw,36px);
+    margin:8px 0 0;
+    font-weight:700;
+    letter-spacing:-.01em;
+  }
+
+  /* ===== HERO ===== */
+  .hero{
+    background: linear-gradient(180deg,var(--teal-deep) 0%, var(--teal) 100%);
+    color:#EFF5EE;
+    padding:88px 24px 72px;
+    border-bottom:2px solid var(--ink);
+    position:relative;
+    overflow:hidden;
+  }
+  .hero-inner{ max-width:920px; margin:0 auto; position:relative; z-index:2; }
+  .hero .eyebrow{ color:#CFE3D6; }
+  .hero h1{
+    font-size:clamp(34px,6vw,58px);
+    line-height:1.05; margin:14px 0 18px; font-weight:700;
+    letter-spacing:-.015em;
+  }
+  .hero p.lede{
+    font-family:'Literata',serif; font-size:18px; max-width:56ch; color:#E6F0E4;
+  }
+  .hero-meta{
+    display:flex; gap:28px; flex-wrap:wrap; margin-top:36px;
+    font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:#CFE3D6;
+  }
+  .hero-meta div span{ display:block; color:#fff; font-size:14px; font-weight:600; margin-top:2px;}
+  .hero-bench{ position:absolute; right:-40px; bottom:-20px; opacity:.16; z-index:1; }
+
+  /* ===== TUJUAN ===== */
+  .tujuan-list{ list-style:none; margin:0; padding:0; counter-reset:tujuan; }
+  .tujuan-list li{
+    counter-increment:tujuan;
+    display:flex; gap:18px; padding:18px 0; border-top:1px solid var(--line);
+  }
+  .tujuan-list li:first-child{ border-top:none; }
+  .tujuan-list li::before{
+    content: counter(tujuan,decimal-leading-zero);
+    font-family:'IBM Plex Mono',monospace; font-weight:600; color:var(--amber-deep);
+    font-size:14px; padding-top:2px; flex-shrink:0; width:28px;
+  }
+  .tujuan-list li p{ margin:0; }
+  .tujuan-list li strong{ color:var(--teal-deep); }
+  .cp-tag{
+    display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:10.5px;
+    letter-spacing:.06em; text-transform:uppercase; background:var(--teal-deep); color:#fff;
+    padding:3px 8px; border-radius:2px; margin-bottom:14px;
+  }
+
+  /* ===== MATERI: filter + cards ===== */
+  .filter-row{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:28px; }
+  .filter-chip{
+    font-family:'IBM Plex Mono',monospace; font-size:11.5px; letter-spacing:.03em;
+    border:1.5px solid var(--ink); background:var(--paper); color:var(--ink);
+    padding:7px 14px; border-radius:20px; cursor:pointer; transition:.15s;
+  }
+  .filter-chip.active, .filter-chip:hover{ background:var(--ink); color:var(--bg); }
+
+  .alat-grid{
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:16px;
+  }
+  .alat-card{
+    perspective:1200px; height:270px; cursor:pointer;
+  }
+  .alat-card-inner{
+    position:relative; width:100%; height:100%; transition:transform .55s cubic-bezier(.4,.1,.2,1);
+    transform-style:preserve-3d;
+  }
+  .alat-card.flipped .alat-card-inner{ transform:rotateY(180deg); }
+  .alat-face{
+    position:absolute; inset:0; backface-visibility:hidden;
+    border:1.5px solid var(--ink); border-radius:var(--radius);
+    padding:16px; display:flex; flex-direction:column;
+    background:var(--paper);
+  }
+  .alat-front{ align-items:center; justify-content:center; text-align:center; gap:10px;}
+  .alat-front .icon-wrap{ height:130px; display:flex; align-items:center; justify-content:center; width:100%;}
+  .alat-front svg{ max-height:130px; max-width:100%; }
+  .alat-front h3{ font-size:15px; margin:0; font-weight:600; }
+  .alat-front .tap-hint{ font-size:10px; color:var(--ink-soft); font-family:'IBM Plex Mono',monospace; letter-spacing:.05em;}
+  .alat-back{
+    transform:rotateY(180deg); background:var(--teal-deep); color:#EFF5EE;
+    justify-content:flex-start; overflow-y:auto;
+  }
+  .alat-back .kategori{
+    font-family:'IBM Plex Mono',monospace; font-size:9.5px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--amber); margin-bottom:8px; font-weight:700;
+  }
+  .alat-back h3{ font-size:15px; margin:0 0 8px; }
+  .alat-back p{ font-size:12.5px; line-height:1.5; margin:0; font-family:'Literata',serif; color:#E6F0E4;}
+
+  /* ===== ASESMEN ===== */
+  .quiz-card{
+    border:1.5px solid var(--ink); border-radius:var(--radius); background:var(--paper);
+    padding:24px; margin-bottom:18px;
+  }
+  .quiz-card .q-num{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--amber-deep); font-weight:700;
+    letter-spacing:.05em; margin-bottom:8px;
+  }
+  .quiz-card p.q-text{ margin:0 0 16px; font-weight:600; font-size:16.5px; }
+  .opt{
+    display:flex; align-items:center; gap:12px; padding:11px 14px; border:1px solid var(--line);
+    border-radius:var(--radius); margin-bottom:8px; cursor:pointer; transition:.15s; background:var(--bg);
+  }
+  .opt:hover{ border-color:var(--teal); }
+  .opt.selected{ border-color:var(--teal); background:#E4F0EA; }
+  .opt.correct{ border-color:var(--teal); background:#DCEFE2; }
+  .opt.incorrect{ border-color:var(--danger); background:#F7E4DE; }
+  .opt-letter{
+    font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:12px;
+    width:22px; height:22px; border-radius:50%; border:1.5px solid var(--ink);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .opt.selected .opt-letter, .opt.correct .opt-letter{ background:var(--teal); color:#fff; border-color:var(--teal);}
+  .opt.incorrect .opt-letter{ background:var(--danger); color:#fff; border-color:var(--danger);}
+  .quiz-actions{ display:flex; align-items:center; gap:16px; margin-top:8px; flex-wrap:wrap;}
+  .btn{
+    font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:13px; letter-spacing:.03em;
+    background:var(--ink); color:var(--bg); border:none; padding:13px 26px; border-radius:2px;
+    cursor:pointer; transition:.15s;
+  }
+  .btn:hover{ background:var(--teal-deep); }
+  .btn:disabled{ background:#9AA79E; cursor:not-allowed; }
+  .btn.ghost{ background:none; color:var(--ink); border:1.5px solid var(--ink); }
+  .btn.ghost:hover{ background:var(--ink); color:var(--bg); }
+  .score-box{
+    font-family:'IBM Plex Mono',monospace; font-size:14px; font-weight:600; color:var(--teal-deep);
+  }
+  .result-banner{
+    display:none; border:1.5px solid var(--ink); border-radius:var(--radius); padding:22px 24px;
+    background:var(--rack-bg); margin-top:24px; text-align:center;
+  }
+  .result-banner.show{ display:block; }
+  .result-banner .big-score{ font-family:'IBM Plex Mono',monospace; font-size:42px; font-weight:700; color:var(--teal-deep);}
+  .result-banner p{ margin:6px 0 0; }
+
+  /* ===== REFLEKSI ===== */
+  .reflect-grid{ display:flex; flex-direction:column; gap:22px; }
+  .reflect-item label{
+    display:block; font-weight:600; margin-bottom:8px; font-size:15.5px; color:var(--teal-deep);
+  }
+  .reflect-item textarea{
+    width:100%; min-height:80px; border:1.5px solid var(--ink); border-radius:var(--radius);
+    padding:12px 14px; font-family:'Literata',serif; font-size:15px; resize:vertical;
+    background:var(--paper); color:var(--ink);
+  }
+  .reflect-item textarea:focus{ outline:2px solid var(--teal); outline-offset:1px; }
+  .reflect-save{ margin-top:8px; }
+  .reflect-note{
+    font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-soft); margin-top:10px; display:none;
+  }
+  .reflect-note.show{ display:block; }
+
+  /* ===== PUSTAKA ===== */
+  .pustaka-list{ list-style:none; margin:0; padding:0; }
+  .pustaka-list li{
+    display:flex; gap:16px; padding:16px 0; border-top:1px solid var(--line); font-size:14.5px;
+  }
+  .pustaka-list li:first-child{ border-top:none; }
+  .pustaka-list li .idx{
+    font-family:'IBM Plex Mono',monospace; color:var(--amber-deep); font-weight:700; flex-shrink:0; width:24px;
+  }
+  footer{
+    text-align:center; padding:32px 24px 48px; font-family:'IBM Plex Mono',monospace;
+    font-size:11.5px; color:var(--ink-soft);
+  }
+
+  @media (max-width:600px){
+    section{ padding:44px 18px; }
+    .hero{ padding:64px 18px 52px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- RACK NAVIGATION -->
+<nav class="rack-nav">
+  <div class="rack" id="rack"></div>
+</nav>
+
+<!-- HERO / TOPIK -->
+<section id="topik" style="padding:0;border-bottom:2px solid var(--ink);">
+  <div class="hero">
+    <svg class="hero-bench" width="360" height="240" viewBox="0 0 360 240" fill="none">
+      <rect x="10" y="180" width="340" height="10" fill="#EFF5EE"/>
+      <rect x="40" y="120" width="26" height="60" rx="2" stroke="#EFF5EE" stroke-width="3"/>
+      <ellipse cx="53" cy="120" rx="13" ry="5" stroke="#EFF5EE" stroke-width="3"/>
+      <path d="M140 100 L150 180 L190 180 L200 100 Z" stroke="#EFF5EE" stroke-width="3"/>
+      <rect x="130" y="90" width="70" height="12" stroke="#EFF5EE" stroke-width="3"/>
+      <circle cx="270" cy="140" r="34" stroke="#EFF5EE" stroke-width="3"/>
+      <rect x="255" y="174" width="30" height="10" stroke="#EFF5EE" stroke-width="3"/>
+    </svg>
+    <div class="hero-inner">
+      <span class="eyebrow">Topik &middot; IPA Kelas VII &middot; Fase D</span>
+      <h1>Pengenalan Alat-Alat<br>Laboratorium IPA</h1>
+      <p class="lede">Sebelum melakukan percobaan, seorang ilmuwan perlu mengenal dulu perkakas kerjanya. Modul ini mengajak kamu berkeliling laboratorium IPA — mengenali nama, fungsi, dan cara aman menggunakan setiap alat sebelum benar-benar memegangnya.</p>
+      <div class="hero-meta">
+        <div>Jenjang <span>SMP / Kelas VII</span></div>
+        <div>Alokasi waktu <span>2 × 40 menit</span></div>
+        <div>Model <span>Discovery Learning</span></div>
+        <div>Elemen CP <span>Keterampilan Proses</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TUJUAN PEMBELAJARAN -->
+<section id="tujuan">
+  <div class="section-head">
+    <span class="eyebrow">01 &middot; Tujuan Pembelajaran</span>
+    <h2>Setelah mempelajari modul ini, kamu diharapkan mampu:</h2>
+  </div>
+  <ol class="tujuan-list">
+    <li><p><strong>Mengidentifikasi</strong> nama-nama alat laboratorium IPA yang umum digunakan di jenjang SMP.</p></li>
+    <li><p><strong>Menjelaskan</strong> fungsi dan cara kerja setiap alat laboratorium sesuai kategorinya (alat ukur, alat gelas, alat pemanas, dan alat keselamatan).</p></li>
+    <li><p><strong>Mengelompokkan</strong> alat-alat laboratorium berdasarkan fungsi dan bahan pembuatnya.</p></li>
+    <li><p><strong>Menerapkan</strong> prosedur keselamatan kerja (K3) dasar saat menggunakan alat-alat laboratorium.</p></li>
+  </ol>
+</section>
+
+<!-- MATERI PEMBELAJARAN -->
+<section id="materi">
+  <div class="section-head">
+    <span class="eyebrow">02 &middot; Materi Pembelajaran</span>
+    <h2>Kenali Alatnya</h2>
+    <p style="max-width:60ch;color:var(--ink-soft);margin-top:10px;">Ketuk atau klik setiap kartu untuk membalik dan membaca fungsinya. Gunakan filter kategori untuk menjelajah berdasarkan jenis alat.</p>
+  </div>
+  <div class="filter-row" id="filterRow"></div>
+  <div class="alat-grid" id="alatGrid"></div>
+</section>
+
+<!-- ASESMEN -->
+<section id="asesmen">
+  <div class="section-head">
+    <span class="cp-tag">Asesmen Formatif</span>
+    <h2>Uji Pemahamanmu</h2>
+    <p style="max-width:60ch;color:var(--ink-soft);margin-top:10px;">Jawab 8 soal pilihan ganda berikut. Kamu bisa mengganti jawaban sebelum menekan tombol "Periksa Jawaban".</p>
+  </div>
+  <div id="quizContainer"></div>
+  <div class="quiz-actions">
+    <button class="btn" id="checkBtn">Periksa Jawaban</button>
+    <button class="btn ghost" id="resetBtn">Ulangi Kuis</button>
+    <span class="score-box" id="progressText">0 / 8 terjawab</span>
+  </div>
+  <div class="result-banner" id="resultBanner">
+    <div class="big-score" id="bigScore">0/8</div>
+    <p id="resultMsg"></p>
+  </div>
+</section>
+
+<!-- REFLEKSI -->
+<section id="refleksi">
+  <div class="section-head">
+    <span class="eyebrow">03 &middot; Refleksi</span>
+    <h2>Sejenak Merenungkan Kembali</h2>
+    <p style="max-width:60ch;color:var(--ink-soft);margin-top:10px;">Tuliskan jawabanmu dengan jujur. Tidak ada jawaban salah pada bagian ini — refleksi membantumu menyadari apa yang sudah dan belum kamu pahami.</p>
+  </div>
+  <div class="reflect-grid">
+    <div class="reflect-item">
+      <label>1. Alat laboratorium apa yang paling mudah kamu ingat namanya, dan mengapa?</label>
+      <textarea placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+    <div class="reflect-item">
+      <label>2. Bagian materi mana yang menurutmu masih membingungkan?</label>
+      <textarea placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+    <div class="reflect-item">
+      <label>3. Mengapa penting mengetahui aturan keselamatan sebelum menggunakan alat laboratorium?</label>
+      <textarea placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+    <div class="reflect-item">
+      <label>4. Apa satu hal baru yang kamu pelajari hari ini dan ingin kamu coba praktikkan?</label>
+      <textarea placeholder="Tulis jawabanmu di sini..."></textarea>
+    </div>
+  </div>
+  <button class="btn reflect-save" id="saveReflect">Simpan Refleksi</button>
+  <p class="reflect-note" id="reflectNote">Refleksi tersimpan untuk sesi ini. Jangan lupa salin ke buku catatanmu jika ingin menyimpannya secara permanen.</p>
+</section>
+
+<!-- DAFTAR PUSTAKA -->
+<section id="pustaka">
+  <div class="section-head">
+    <span class="eyebrow">04 &middot; Daftar Pustaka</span>
+    <h2>Rujukan</h2>
+  </div>
+  <ol class="pustaka-list" id="pustakaList"></ol>
+</section>
+
+<footer>Media Pembelajaran IPA &middot; Pengenalan Alat Laboratorium &middot; Kelas VII SMP</footer>
+
+<script>
+/* ---------- DATA ---------- */
+const sections = [
+  {id:'topik', label:'Topik', color:'#E2963A'},
+  {id:'tujuan', label:'Tujuan', color:'#C77A22'},
+  {id:'materi', label:'Materi', color:'#2F6F62'},
+  {id:'asesmen', label:'Asesmen', color:'#6C5B9E'},
+  {id:'refleksi', label:'Refleksi', color:'#3A6EA5'},
+  {id:'pustaka', label:'Pustaka', color:'#445248'}
+];
+
+const kategoriList = ['Semua','Alat Ukur','Alat Gelas','Alat Pemanas & Penunjang','Alat Optik & Keselamatan'];
+
+const alatData = [
+  {nama:'Mikroskop', kategori:'Alat Optik & Keselamatan',
+   fungsi:'Digunakan untuk mengamati objek yang sangat kecil dan tidak dapat dilihat mata telanjang, seperti sel dan mikroorganisme.',
+   svg:`<svg viewBox="0 0 120 130" width="110" height="110" fill="none" stroke="#16241C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+     <rect x="30" y="105" width="60" height="10"/>
+     <path d="M60 105 L60 88 L48 88"/>
+     <rect x="30" y="82" width="24" height="10"/>
+     <path d="M48 88 C 48 60, 70 55, 78 35"/>
+     <rect x="70" y="20" width="16" height="18" rx="2"/>
+     <circle cx="78" cy="14" r="6"/>
+     <rect x="40" y="70" width="26" height="8"/>
+     <line x1="53" y1="78" x2="53" y2="88"/>
+   </svg>`},
+  {nama:'Tabung Reaksi', kategori:'Alat Gelas',
+   fungsi:'Wadah kecil berbentuk silinder dengan dasar bulat, digunakan untuk mereaksikan zat dalam jumlah sedikit atau memanaskan larutan.',
+   svg:`<svg viewBox="0 0 60 130" width="70" height="110" fill="none" stroke="#16241C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+     <path d="M18 10 L18 95 A12 12 0 0 0 42 95 L42 10"/>
+     <line x1="14" y1="10" x2="46" y2="10"/>
+     <path d="M20 60 L40 60" stroke-dasharray="4 4"/>
+   </svg>`},
+  {nama:'Rak Tabung Reaksi', kategori:'Alat Penunjang',
+   fungsi:'Digunakan untuk menyimpan dan menegakkan beberapa tabung reaksi agar tidak mudah jatuh atau tumpah.',
+   svg:`<svg viewBox="0 0 140 100" width="120" height="90" fill="none" stroke="#16241C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+     <rect x="10" y="55" width="120" height="16" rx="2"/>
+     <rect x="10" y="20" width="120" height="14" rx="2"/>
+     <circle cx="35" cy="27" r="8"/><circle cx="70" cy="27" r="8"/><circle cx="105" cy="27" r="8"/>
+     <line x1="20" y1="34" x2="20" y2="55"/><line x1="50" y1="34" x2="50" y2="55"/>
+     <line x1="90" y1="34" x2="90" y2="55"/><line x1="120" y1="34" x2="120" y2="55"/>
+     <rect x="20" y="4" width="30" height="18" rx="2"/>
+   </svg>`},
+  {nama:'Gelas Kimia (Beaker)', kategori:'Alat Gelas',
+   fungsi:'Wadah serbaguna untuk mencampur, memanaskan, atau menampung larutan; memiliki skala volume yang kurang presisi.',
+   svg:`<svg viewBox="0 0 100 100" width="100" height="100" fill="none" stroke="#16241C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+     <path d="M20 15 L18 80 A6 6 0 0 0 24 86 L76 86 A6 6 0 0 0 82 80 L80 15"/>
+     <path d="M14 15 L86 15" />
+     <path d="M84 15 L88 8"/>
+     <line x1="26" y1="40" x2="34" y2="40"/><line x1="26" y1="55" x2="34" y2="55"/><line x1="26" y1="70" x2="34" y2="70"/>
+   </svg>`},
+  {nama:'Gelas Ukur', kategori:'Alat Ukur',
+   fungsi:'Digunakan untuk mengukur volume zat cair secara lebih tepat, ditandai dengan skala yang tertera di sepanjang badannya.',
+   svg:`<svg viewBox="0 0 70 110" width="70" height="110" fill="none" stroke="#16241C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+     <path d="M22 8 L18 92 A6 6 0 0 0 24 98 L46 98 A6 6 0 0 0 52 92 L48 8"/>
+     <rect x="16" y="4" width="38" height="8"/>
+     <line x1="20" y1="30" x2="30" y2="30"/><line x1="20" y1="50" x2="30" y2="50"/>
+     <line x1="20" y1="70" x2="30" y2="70"/>
+   </svg>`},
+  {nama:'Labu Erlenmeyer', kategori:'Alat Gelas',
+   fungsi:'Wadah berbentuk kerucut dengan leher sempit, cocok untuk mencampur atau menitrasi larutan tanpa risiko tumpah.',
+   svg:`<svg viewBox="0 0 100 110" width="95" height="105" fill="none" stroke="#16241C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+     <path d="M42 8 L42 34 L14 92 A6 6 0 0 0 20 100 L80 100 A6 6 0 0 0 86 92 L58 34 L58 8"/>
+     <line x1="38" y1="8" x2="62" y2="8"/>
+     <line x1="30" y1="75" x2="70" y2="75"/>
+   </svg>`},
+  {nama:'Pipet Tetes', kategori:'Alat Ukur',
+   fungsi:'Digunakan untuk mengambil dan memindahkan cairan dalam jumlah sangat sedikit, setetes demi setetes.',
+   svg:`<svg viewBox="0 0 40 120" width="45" height="115" fill="none" stroke="#16241C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+     <path d="M12 4 C 4 14, 4 22, 12 28 L18 34 L18 96 L22 104 L26 96 L26 34 L28 28 C 36 22, 36 14, 28 4 Z"/>
+   </svg>`},
+  {nama:'Kaki Tiga & Kasa', kategori:'Alat Pemanas & Penunjang',
+   fungsi:'Kaki tiga menyangga wadah saat pemanasan, sedangkan kawat kasa di atasnya meratakan panas dari api ke wadah kaca.',
+   svg:`<svg viewBox="0 0 110 100" width="110" height="90" fill="none" stroke="#16241C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+     <ellipse cx="55" cy="30" rx="42" ry="8"/>
+     <line x1="14" y1="30" x2="4" y2="90"/>
+     <line x1="96" y1="30" x2="106" y2="90"/>
+     <line x1="55" y1="38" x2="55" y2="90"/>
+     <path d="M25 24 h60 M25 34 h60" stroke-dasharray="3 3"/>
+   </svg>`},
+  {nama:'Pembakar Spiritus', kategori:'Alat Pemanas & Penunjang',
+   fungsi:'Sumber api untuk memanaskan zat dalam skala kecil di laboratorium, bahan bakarnya berupa spiritus (alkohol).',
+   svg:`<svg viewBox="0 0 70 110" width="70" height="105" fill="none" stroke="#16241C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+     <path d="M18 60 L18 96 A17 12 0 0 0 52 96 L52 60 Z"/>
+     <ellipse cx="35" cy="60" rx="17" ry="8"/>
+     <rect x="30" y="42" width="10" height="18"/>
+     <path d="M35 10 C 28 22, 42 26, 35 40" stroke="#E2963A"/>
+   </svg>`},
+  {nama:'Penjepit Tabung Reaksi', kategori:'Alat Pemanas & Penunjang',
+   fungsi:'Digunakan untuk menjepit tabung reaksi saat dipanaskan agar tangan tidak bersentuhan langsung dengan panas.',
+   svg:`<svg viewBox="0 0 100 60" width="110" height="66" fill="none" stroke="#16241C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+     <path d="M6 30 C 30 10, 70 10, 94 30"/>
+     <path d="M10 34 C 32 16, 68 16, 90 34"/>
+     <path d="M6 30 L2 22 M94 30 L98 22"/>
+     <circle cx="50" cy="22" r="4"/>
+   </svg>`},
+  {nama:'Cawan Petri', kategori:'Alat Gelas',
+   fungsi:'Wadah datar dan dangkal bertutup, umum digunakan untuk mengembangbiakkan mikroorganisme atau meletakkan objek amatan.',
+   svg:`<svg viewBox="0 0 110 60" width="115" height="60" fill="none" stroke="#16241C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+     <ellipse cx="55" cy="44" rx="48" ry="10"/>
+     <path d="M7 44 L7 30 A48 10 0 0 1 103 30 L103 44"/>
+     <ellipse cx="55" cy="16" rx="40" ry="8"/>
+   </svg>`},
+  {nama:'Kertas Lakmus', kategori:'Alat Ukur',
+   fungsi:'Digunakan untuk menguji sifat asam atau basa suatu larutan; berubah warna merah pada larutan asam dan biru pada larutan basa.',
+   svg:`<svg viewBox="0 0 100 70" width="110" height="80" fill="none" stroke="#16241C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+     <rect x="6" y="10" width="40" height="14" fill="#B4543A" stroke="none"/>
+     <rect x="6" y="10" width="40" height="14"/>
+     <rect x="6" y="30" width="40" height="14" fill="#3A6EA5" stroke="none"/>
+     <rect x="6" y="30" width="40" height="14"/>
+     <path d="M60 6 L60 60" stroke-dasharray="3 3"/>
+     <path d="M70 20 L94 20 M70 34 L88 34"/>
+   </svg>`},
+  {nama:'Neraca (Timbangan)', kategori:'Alat Ukur',
+   fungsi:'Digunakan untuk mengukur massa suatu benda atau zat dengan tingkat ketelitian tertentu.',
+   svg:`<svg viewBox="0 0 110 90" width="110" height="90" fill="none" stroke="#16241C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+     <rect x="10" y="60" width="90" height="12" rx="2"/>
+     <rect x="45" y="30" width="20" height="30"/>
+     <line x1="55" y1="10" x2="55" y2="30"/>
+     <line x1="15" y1="12" x2="95" y2="12"/>
+     <line x1="15" y1="12" x2="15" y2="20"/><line x1="95" y1="12" x2="95" y2="20"/>
+   </svg>`},
+  {nama:'Corong', kategori:'Alat Gelas',
+   fungsi:'Digunakan untuk memasukkan atau memindahkan cairan ke wadah bermulut kecil, dan membantu proses penyaringan (filtrasi).',
+   svg:`<svg viewBox="0 0 90 90" width="90" height="90" fill="none" stroke="#16241C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+     <path d="M6 10 L84 10 L50 55 L50 82 L40 82 L40 55 Z"/>
+     <line x1="6" y1="10" x2="84" y2="10"/>
+   </svg>`},
+  {nama:'Termometer', kategori:'Alat Ukur',
+   fungsi:'Digunakan untuk mengukur suhu suatu zat atau lingkungan, biasanya dalam satuan derajat Celsius.',
+   svg:`<svg viewBox="0 0 40 110" width="40" height="105" fill="none" stroke="#16241C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+     <circle cx="20" cy="92" r="12" fill="#B4543A" stroke="#16241C"/>
+     <rect x="14" y="10" width="12" height="72" rx="6"/>
+     <line x1="20" y1="60" x2="20" y2="92" stroke="#B4543A" stroke-width="6"/>
+     <line x1="26" y1="30" x2="30" y2="30"/><line x1="26" y1="45" x2="30" y2="45"/><line x1="26" y1="60" x2="30" y2="60"/>
+   </svg>`}
+];
+
+const quizData = [
+  {q:'Alat yang digunakan untuk mengukur volume zat cair secara lebih tepat adalah ....',
+   options:['Gelas kimia','Gelas ukur','Tabung reaksi','Labu Erlenmeyer'], correct:1},
+  {q:'Alat yang digunakan untuk mengamati objek yang sangat kecil, seperti sel, disebut ....',
+   options:['Kaca pembesar','Termometer','Mikroskop','Cawan petri'], correct:2},
+  {q:'Wadah kecil berbentuk silinder yang biasa digunakan untuk mereaksikan zat dalam jumlah sedikit adalah ....',
+   options:['Gelas ukur','Tabung reaksi','Corong','Neraca'], correct:1},
+  {q:'Fungsi utama kaki tiga (tripod) dalam kegiatan praktikum adalah ....',
+   options:['Mengukur suhu larutan','Menyaring campuran','Menyangga wadah saat pemanasan','Menjepit tabung reaksi'], correct:2},
+  {q:'Alat yang digunakan untuk mengambil larutan dalam jumlah yang sangat sedikit, setetes demi setetes, adalah ....',
+   options:['Pipet tetes','Gelas ukur','Corong','Labu Erlenmeyer'], correct:0},
+  {q:'Kertas lakmus digunakan untuk menguji ....',
+   options:['Suhu larutan','Massa suatu zat','Sifat asam atau basa suatu larutan','Volume zat cair'], correct:2},
+  {q:'Wadah kaca berleher sempit dan berbentuk kerucut, yang cocok untuk mencampur atau menitrasi zat tanpa mudah tumpah, disebut ....',
+   options:['Gelas kimia','Cawan petri','Erlenmeyer','Tabung reaksi'], correct:2},
+  {q:'Setelah selesai digunakan, alat-alat kaca di laboratorium sebaiknya ....',
+   options:['Dibiarkan di meja praktikum','Dicuci bersih dan dikeringkan','Disimpan dalam keadaan basah','Ditinggal di dalam wastafel'], correct:1}
+];
+
+/* ---------- RACK NAV RENDER ---------- */
+const rack = document.getElementById('rack');
+sections.forEach((s,i)=>{
+  const btn = document.createElement('button');
+  btn.className = 'tube-btn';
+  btn.dataset.target = s.id;
+  btn.innerHTML = `
+    <svg width="26" height="52" viewBox="0 0 26 52">
+      <path d="M8 2 L8 34 A5 5 0 0 0 18 34 L18 2" fill="none" stroke="#16241C" stroke-width="2"/>
+      <line x1="5" y1="2" x2="21" y2="2" stroke="#16241C" stroke-width="2"/>
+      <clipPath id="clip-${s.id}"><path d="M8 2 L8 34 A5 5 0 0 0 18 34 L18 2 Z"/></clipPath>
+      <rect class="tube-liquid" x="8" y="34" width="10" height="0" fill="${s.color}" clip-path="url(#clip-${s.id})"/>
+      <circle cx="13" cy="42" r="7" fill="none" stroke="#16241C" stroke-width="0" />
+    </svg>
+    <span class="tube-label">${s.label}</span>
+  `;
+  btn.addEventListener('click', ()=> document.getElementById(s.id).scrollIntoView({behavior:'smooth'}));
+  rack.appendChild(btn);
+});
+
+function fillTube(id, filled){
+  const liquid = rack.querySelector(`.tube-btn[data-target="${id}"] .tube-liquid`);
+  if(!liquid) return;
+  const h = filled ? 32 : 0;
+  liquid.setAttribute('height', h);
+  liquid.setAttribute('y', 34-h);
+}
+
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    const btn = rack.querySelector(`.tube-btn[data-target="${e.target.id}"]`);
+    if(e.isIntersecting){
+      rack.querySelectorAll('.tube-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      fillTube(e.target.id, true);
+    }
+  });
+}, {threshold:0.4});
+sections.forEach(s=> observer.observe(document.getElementById(s.id)));
+
+/* ---------- MATERI: filters + cards ---------- */
+const filterRow = document.getElementById('filterRow');
+const alatGrid = document.getElementById('alatGrid');
+let activeFilter = 'Semua';
+
+function renderFilters(){
+  filterRow.innerHTML = '';
+  kategoriList.forEach(k=>{
+    const chip = document.createElement('button');
+    chip.className = 'filter-chip' + (k===activeFilter ? ' active':'');
+    chip.textContent = k;
+    chip.addEventListener('click', ()=>{ activeFilter = k; renderFilters(); renderCards(); });
+    filterRow.appendChild(chip);
+  });
+}
+
+function renderCards(){
+  alatGrid.innerHTML = '';
+  const list = activeFilter==='Semua' ? alatData : alatData.filter(a=>a.kategori===activeFilter);
+  list.forEach(a=>{
+    const card = document.createElement('div');
+    card.className = 'alat-card';
+    card.innerHTML = `
+      <div class="alat-card-inner">
+        <div class="alat-face alat-front">
+          <div class="icon-wrap">${a.svg}</div>
+          <h3>${a.nama}</h3>
+          <span class="tap-hint">Ketuk untuk lihat fungsi ↻</span>
+        </div>
+        <div class="alat-face alat-back">
+          <span class="kategori">${a.kategori}</span>
+          <h3>${a.nama}</h3>
+          <p>${a.fungsi}</p>
+        </div>
+      </div>`;
+    card.addEventListener('click', ()=> card.classList.toggle('flipped'));
+    alatGrid.appendChild(card);
+  });
+}
+renderFilters();
+renderCards();
+
+/* ---------- ASESMEN ---------- */
+const quizContainer = document.getElementById('quizContainer');
+const answers = new Array(quizData.length).fill(null);
+let checked = false;
+
+function renderQuiz(){
+  quizContainer.innerHTML = '';
+  quizData.forEach((item, qi)=>{
+    const card = document.createElement('div');
+    card.className = 'quiz-card';
+    const letters = ['A','B','C','D'];
+    card.innerHTML = `
+      <div class="q-num">Soal ${qi+1} dari ${quizData.length}</div>
+      <p class="q-text">${item.q}</p>
+      <div class="options" data-qi="${qi}"></div>
+    `;
+    const optsWrap = card.querySelector('.options');
+    item.options.forEach((opt, oi)=>{
+      const optEl = document.createElement('div');
+      optEl.className = 'opt';
+      optEl.innerHTML = `<span class="opt-letter">${letters[oi]}</span><span>${opt}</span>`;
+      optEl.addEventListener('click', ()=>{
+        if(checked) return;
+        answers[qi] = oi;
+        renderQuiz();
+        updateProgress();
+      });
+      optsWrap.appendChild(optEl);
+    });
+    quizContainer.appendChild(card);
+  });
+  // reflect current selections / results
+  quizData.forEach((item, qi)=>{
+    const optsWrap = quizContainer.querySelector(`.options[data-qi="${qi}"]`);
+    const optEls = optsWrap.querySelectorAll('.opt');
+    optEls.forEach((el, oi)=>{
+      el.classList.remove('selected','correct','incorrect');
+      if(checked){
+        if(oi === item.correct) el.classList.add('correct');
+        else if(oi === answers[qi]) el.classList.add('incorrect');
+      } else if(answers[qi] === oi){
+        el.classList.add('selected');
+      }
+    });
+  });
+}
+
+function updateProgress(){
+  const answeredCount = answers.filter(a=>a!==null).length;
+  document.getElementById('progressText').textContent = `${answeredCount} / ${quizData.length} terjawab`;
+}
+
+document.getElementById('checkBtn').addEventListener('click', ()=>{
+  if(answers.some(a=>a===null)){
+    alert('Jawab semua soal terlebih dahulu sebelum memeriksa hasil.');
+    return;
+  }
+  checked = true;
+  renderQuiz();
+  const score = answers.reduce((acc,a,i)=> acc + (a===quizData[i].correct ? 1:0), 0);
+  const banner = document.getElementById('resultBanner');
+  banner.classList.add('show');
+  document.getElementById('bigScore').textContent = `${score}/${quizData.length}`;
+  let msg = '';
+  if(score === quizData.length) msg = 'Sempurna! Kamu sudah sangat mengenal alat-alat laboratorium IPA.';
+  else if(score >= quizData.length*0.7) msg = 'Bagus! Pemahamanmu sudah baik, coba tinjau ulang soal yang masih salah.';
+  else msg = 'Yuk, pelajari kembali bagian Materi Pembelajaran sebelum mencoba lagi.';
+  document.getElementById('resultMsg').textContent = msg;
+  document.getElementById('checkBtn').disabled = true;
+});
+
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  checked = false;
+  answers.fill(null);
+  document.getElementById('checkBtn').disabled = false;
+  document.getElementById('resultBanner').classList.remove('show');
+  renderQuiz();
+  updateProgress();
+});
+
+renderQuiz();
+updateProgress();
+
+/* ---------- REFLEKSI ---------- */
+document.getElementById('saveReflect').addEventListener('click', ()=>{
+  document.getElementById('reflectNote').classList.add('show');
+});
+
+/* ---------- PUSTAKA ---------- */
+const pustaka = [
+  'Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi. (2021). <i>Buku Panduan Guru Ilmu Pengetahuan Alam untuk SMP Kelas VII</i>. Jakarta: Pusat Perbukuan, Kemdikbudristek.',
+  'Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi. (2021). <i>Ilmu Pengetahuan Alam untuk SMP Kelas VII</i>. Jakarta: Pusat Perbukuan, Kemdikbudristek.',
+  'Widodo, W., Rachmadiarti, F., & Hidayati, S. N. (2021). <i>IPA Terpadu untuk SMP/MTs Kelas VII</i>. Jakarta: Kementerian Pendidikan dan Kebudayaan.',
+  'Zubaidah, S., Mahanal, S., Yuliati, L., & Puspitawati, R. P. (2018). <i>Ilmu Pengetahuan Alam SMP/MTs Kelas VII</i>. Jakarta: Pusat Kurikulum dan Perbukuan, Balitbang, Kemdikbud.',
+  'Direktorat Sekolah Menengah Pertama. (2022). <i>Panduan Keselamatan Kerja di Laboratorium IPA Sekolah Menengah Pertama</i>. Jakarta: Kemdikbudristek.',
+  'Badan Standar, Kurikulum, dan Asesmen Pendidikan (BSKAP). (2022). <i>Capaian Pembelajaran Mata Pelajaran Ilmu Pengetahuan Alam Fase D — Kurikulum Merdeka</i>. Jakarta: Kemdikbudristek.'
+];
+const pustakaList = document.getElementById('pustakaList');
+pustaka.forEach((p,i)=>{
+  const li = document.createElement('li');
+  li.innerHTML = `<span class="idx">${String(i+1).padStart(2,'0')}</span><span>${p}</span>`;
+  pustakaList.appendChild(li);
+});
+</script>
+</body>
+</html>
